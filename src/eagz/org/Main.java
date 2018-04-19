@@ -22,8 +22,7 @@ public class Main {
 			String web_app = "WebContent";
 			String webService = "http://localhost:8085/test";
 			tomcat.setPort(port);
-			
-			ctxt = tomcat.addWebapp("/", System.getProperty("user.dir") +"\\" +web_app);
+			ctxt = tomcat.addWebapp("/", System.getProperty("user.dir") + "\\" +web_app);
 			
 			Tomcat.addServlet(ctxt, "Servlet", new Servlet());
 			ctxt.addServletMappingDecoded("/WebService", "Servlet");

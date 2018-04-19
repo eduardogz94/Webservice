@@ -22,7 +22,39 @@ public class Servlet extends HttpServlet {
 
     public Servlet() {
     }
-
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	URL url = new URL("http://localhost:8085/test?wsdl");
+		QName qname = new QName("http://utilities.org.eagz/", "ServiceService");
+		Service service = Service.create(url, qname);
+		ServiceInterface server = service.getPort(ServiceInterface.class);
+		
+		PrintWriter out = response.getWriter();
+		JSONObject json = new JSONObject();
+	
+		String email = request.getParameter("email"); 
+		String pass = request.getParameter("password");
+		if (server.check()) {
+		switch(server.user(email,pass)) {
+			case 0:
+					json.put("data", "Wrong data");
+					json.put("Service",server.show());
+				break;
+			case 1:
+					json.put("type", "admin");
+					json.put("Service",server.show());
+				break;
+			case 2:
+					json.put("type", "user");
+					json.put("Service",server.show());
+				break;
+			}
+		}
+		out.print(json.toString());
+		System.out.println(json);
+	}
+    
+    
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		URL url = new URL("http://localhost:8085/test?wsdl");
 		QName qname = new QName("http://utilities.org.eagz/", "ServiceService");
@@ -40,6 +72,7 @@ public class Servlet extends HttpServlet {
 			case 0:
 				if (server.check()) {
 					json.put("status", "401").put("data", "Wrong data");
+					json.put("Service",server.show());
 			    }
 				break;
 			case 1:
